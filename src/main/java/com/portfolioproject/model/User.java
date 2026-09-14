@@ -1,23 +1,17 @@
 package com.portfolioproject.model;
 
 public class User {
-    // 1. Fields
+
     private String userid;
     private String name;
     private String email;
 
-    // 2. Default Constructor
-    public User() {
-    }
-
-    // 3. Parameterized Constructor
     public User(String userid, String name, String email) {
         this.userid = userid;
         this.name = name;
         this.email = email;
     }
 
-    // 4. Getter and Setter Methods
     public String getUserid() {
         return userid;
     }
@@ -42,3 +36,4 @@ public class User {
         this.email = email;
     }
 }
+
