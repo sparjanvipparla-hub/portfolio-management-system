@@ -1,6 +1,6 @@
-package com.portfolio.app;
+package com.portfolioproject.app;
 
-import com.portfolio.app.model.User;
+import com.portfolioproject.model.User;
 
 public class Main {
 
@@ -11,7 +11,7 @@ public class Main {
         
         // Demo user values with rishi
         User user = new User("user-1234", "rishi", "rishi@gmail.com");
-        
+                                                                                                                                                                                                                                                    
         System.out.println("User ID: " + user.getUserid());
         System.out.println("Name: " + user.getName());
         System.out.println("Email: " + user.getEmail());

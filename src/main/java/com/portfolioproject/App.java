@@ -1,4 +1,4 @@
-package com.portfolio.app;
+package com.portfolioproject;
 
 /**
  * Hello world!

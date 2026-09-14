@@ -1,4 +1,4 @@
-package com.portfolio.app.model;
+package com.portfolioproject.model;
 
 public class User {
     // 1. Fields
