@@ -6,12 +6,14 @@ public class Stock {
     private String stockname;
     private double price;
 
+    // Constructor
     public Stock(String stockid, String stockname, double price) {
         this.stockid = stockid;
         this.stockname = stockname;
         this.price = price;
     }
 
+    // Getter and Setter for Stock ID
     public String getStockid() {
         return stockid;
     }
@@ -20,6 +22,7 @@ public class Stock {
         this.stockid = stockid;
     }
 
+    // Getter and Setter for Stock Name
     public String getStockname() {
         return stockname;
     }
@@ -28,6 +31,7 @@ public class Stock {
         this.stockname = stockname;
     }
 
+    // Getter and Setter for Price
     public double getPrice() {
         return price;
     }
@@ -36,4 +40,3 @@ public class Stock {
         this.price = price;
     }
 }
-
