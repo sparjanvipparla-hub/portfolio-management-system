@@ -1,45 +1,57 @@
 package com.portfolioproject.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class User {
 
-    private String userid;
+    private String userId;
     private String name;
     private String email;
 
-    // Constructor
-    public User(String userid, String name, String email) {
-        this.userid = userid;
+    private List<Holding> holdings;
+
+    public User(String userId, String name, String email) {
+        this.userId = userId;
         this.name = name;
         this.email = email;
+        this.holdings = new ArrayList<>();
     }
 
-    // Getter for user ID
-    public String getUserid() {
-        return userid;
+    public String getUserId() {
+        return userId;
     }
 
-    // Getter for name
     public String getName() {
         return name;
     }
 
-    // Getter for email
     public String getEmail() {
         return email;
     }
 
-    // Setter for user ID
-    public void setUserid(String userid) {
-        this.userid = userid;
+    public void addHolding(Holding holding) {
+        holdings.add(holding);
     }
 
-    // Setter for name
-    public void setName(String name) {
-        this.name = name;
+    public void displayInvestments() {
+
+        if (holdings.isEmpty()) {
+            System.out.println("No investments found.");
+            return;
+        }
+
+        System.out.println("\n===== HOLDINGS =====");
+
+        for (Holding holding : holdings) {
+            System.out.println(holding);
+        }
     }
 
-    // Setter for email
-    public void setEmail(String email) {
-        this.email = email;
+    @Override
+    public String toString() {
+        return "User ID: " + userId
+                + "\nName: " + name
+                + "\nEmail: " + email;
     }
 }
