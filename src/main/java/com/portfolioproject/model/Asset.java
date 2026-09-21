@@ -20,7 +20,7 @@ public abstract class Asset {
         return assetName;
     }
 
-    public double getPurchasePrice() {
+        public double getPurchasePrice() {
         return purchasePrice;
     }
 
