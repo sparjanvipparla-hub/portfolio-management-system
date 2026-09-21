@@ -23,6 +23,7 @@ public class User {
     public void addHolding(Holding holding) {
 
         if (holding != null) {
+
             holdings.add(holding);
         }
     }

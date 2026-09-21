@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import com.portfolioproject.model.Asset;
 import com.portfolioproject.model.Holding;
 import com.portfolioproject.model.MutualFund;
 import com.portfolioproject.model.Stock;
@@ -25,14 +26,13 @@ public class Main {
         System.out.println("========== ENTER USERS DATA ==========");
 
         System.out.print("Enter number of users: ");
-
         int numberOfUsers = readPositiveInt(scanner);
 
         for (int i = 1; i <= numberOfUsers; i++) {
 
             System.out.println();
             System.out.println("======================================");
-            System.out.println("           USER " + i);
+            System.out.println("              USER " + i);
             System.out.println("======================================");
 
             System.out.println();
@@ -44,10 +44,6 @@ public class Main {
             System.out.print("Enter Name: ");
             String name = scanner.nextLine();
 
-            /*
-             * Check whether the same User ID and Name
-             * already exist in the ArrayList.
-             */
             if (userExists(users, userId, name)) {
 
                 System.out.println();
@@ -59,18 +55,13 @@ public class Main {
                 System.out.println("Please enter a different user.");
 
                 i--;
-
                 continue;
             }
 
             System.out.print("Enter Email: ");
             String email = scanner.nextLine();
 
-            User user = new User(
-                    userId,
-                    name,
-                    email
-            );
+            User user = new User(userId, name, email);
 
             System.out.println();
             System.out.println("User created successfully.");
@@ -90,16 +81,13 @@ public class Main {
             String stockName = scanner.nextLine();
 
             System.out.print("Enter Purchase Price: ");
-            double stockPurchasePrice =
-                    readPositiveDouble(scanner);
+            double stockPurchasePrice = readPositiveDouble(scanner);
 
             System.out.print("Enter Current Price: ");
-            double stockCurrentPrice =
-                    readPositiveDouble(scanner);
+            double stockCurrentPrice = readPositiveDouble(scanner);
 
             System.out.print("Enter Quantity: ");
-            double stockQuantity =
-                    readPositiveDouble(scanner);
+            double stockQuantity = readPositiveDouble(scanner);
 
             Stock stock = new Stock(
                     stockId,
@@ -116,7 +104,6 @@ public class Main {
 
             user.addHolding(stockHolding);
 
-            System.out.println();
             System.out.println("Stock holding added successfully.");
 
             // ================= ADD MUTUAL FUND =================
@@ -134,20 +121,16 @@ public class Main {
             String mutualFundName = scanner.nextLine();
 
             System.out.print("Enter Purchase Price: ");
-            double mutualPurchasePrice =
-                    readPositiveDouble(scanner);
+            double mutualPurchasePrice = readPositiveDouble(scanner);
 
             System.out.print("Enter NAV: ");
-            double nav =
-                    readPositiveDouble(scanner);
+            double nav = readPositiveDouble(scanner);
 
             System.out.print("Enter Exit Load (%): ");
-            double exitLoad =
-                    readPercentage(scanner);
+            double exitLoad = readPercentage(scanner);
 
             System.out.print("Enter Units: ");
-            double units =
-                    readPositiveDouble(scanner);
+            double units = readPositiveDouble(scanner);
 
             MutualFund mutualFund = new MutualFund(
                     mutualFundId,
@@ -165,12 +148,9 @@ public class Main {
 
             user.addHolding(mutualFundHolding);
 
-            System.out.println();
             System.out.println(
                     "Mutual fund holding added successfully."
             );
-
-            // Add user to ArrayList
 
             users.add(user);
 
@@ -224,10 +204,8 @@ public class Main {
         scanner.close();
     }
 
-    /*
-     * Checks whether a user with the same
-     * User ID AND Name already exists.
-     */
+    // Check duplicate user
+
     private static boolean userExists(
             List<User> users,
             String userId,
@@ -245,6 +223,8 @@ public class Main {
         return false;
     }
 
+    // Read positive integer
+
     private static int readPositiveInt(
             Scanner scanner) {
 
@@ -252,8 +232,9 @@ public class Main {
 
             try {
 
-                int value =
-                        Integer.parseInt(scanner.nextLine());
+                int value = Integer.parseInt(
+                        scanner.nextLine()
+                );
 
                 if (value > 0) {
 
@@ -273,6 +254,8 @@ public class Main {
         }
     }
 
+    // Read positive decimal number
+
     private static double readPositiveDouble(
             Scanner scanner) {
 
@@ -280,8 +263,9 @@ public class Main {
 
             try {
 
-                double value =
-                        Double.parseDouble(scanner.nextLine());
+                double value = Double.parseDouble(
+                        scanner.nextLine()
+                );
 
                 if (value >= 0) {
 
@@ -301,6 +285,8 @@ public class Main {
         }
     }
 
+    // Read percentage between 0 and 100
+
     private static double readPercentage(
             Scanner scanner) {
 
@@ -308,8 +294,9 @@ public class Main {
 
             try {
 
-                double value =
-                        Double.parseDouble(scanner.nextLine());
+                double value = Double.parseDouble(
+                        scanner.nextLine()
+                );
 
                 if (value >= 0 && value <= 100) {
 
