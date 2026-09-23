@@ -5,14 +5,14 @@ import com.portfolioproject.model.Stock;
 import com.portfolioproject.model.MutualFund;
 import com.portfolioproject.model.Holding;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
 
-    // Store all users
-    static List<User> users = new ArrayList<>();
+    // HashMap stores users using User ID as the key
+    static Map<String, User> users = new HashMap<>();
 
     public static void main(String[] args) {
 
@@ -49,24 +49,43 @@ public class Main {
                     System.out.println("--- Create User ---");
 
                     System.out.print("Enter User ID: ");
-                    String userid = sc.nextLine();
+                    String userid = sc.nextLine().trim();
 
-                    System.out.print("Enter User Name: ");
-                    String name = sc.nextLine();
+                    if (userid.isEmpty()) {
+                        System.out.println("User ID cannot be empty.");
+                        break;
+                    }
 
-                    // Check duplicate user
-                    if (userExists(userid, name)) {
+                    // HashMap duplicate check
+                    if (users.containsKey(userid)) {
 
                         System.out.println();
-                        System.out.println("User already exists!");
-                        System.out.println("User ID   : " + userid);
-                        System.out.println("User Name : " + name);
+                        System.out.println(
+                                "User ID already exists!"
+                        );
+
+                        System.out.println(
+                                "Please enter a different User ID."
+                        );
 
                         break;
                     }
 
+                    System.out.print("Enter User Name: ");
+                    String name = sc.nextLine().trim();
+
+                    if (name.isEmpty()) {
+                        System.out.println("User name cannot be empty.");
+                        break;
+                    }
+
                     System.out.print("Enter Email: ");
-                    String email = sc.nextLine();
+                    String email = sc.nextLine().trim();
+
+                    if (email.isEmpty()) {
+                        System.out.println("Email cannot be empty.");
+                        break;
+                    }
 
                     User newUser = new User(
                             userid,
@@ -74,10 +93,13 @@ public class Main {
                             email
                     );
 
-                    users.add(newUser);
+                    // Add user to HashMap
+                    users.put(userid, newUser);
 
                     System.out.println();
-                    System.out.println("User created successfully!");
+                    System.out.println(
+                            "User created successfully!"
+                    );
 
                     break;
 
@@ -101,32 +123,35 @@ public class Main {
                     System.out.println("--- Add Stock Holding ---");
 
                     System.out.print("Enter User ID: ");
-                    String stockUserId = sc.nextLine();
+                    String stockUserId = sc.nextLine().trim();
 
+                    // Find user using HashMap
                     User stockUser = findUser(stockUserId);
 
                     if (stockUser == null) {
 
-                        System.out.println("User not found.");
+                        System.out.println(
+                                "User not found."
+                        );
 
                         break;
                     }
 
                     System.out.print("Enter Holding ID: ");
-                    String stockHoldingId = sc.nextLine();
+                    String stockHoldingId = sc.nextLine().trim();
 
                     System.out.print("Enter Stock ID: ");
-                    String stockId = sc.nextLine();
+                    String stockId = sc.nextLine().trim();
 
                     System.out.print("Enter Stock Name: ");
-                    String stockName = sc.nextLine();
+                    String stockName = sc.nextLine().trim();
 
-                    double purchasePrice = readDouble(
+                    double purchasePrice = readPositiveDouble(
                             sc,
                             "Enter Purchase Price: "
                     );
 
-                    double currentPrice = readDouble(
+                    double currentPrice = readPositiveDouble(
                             sc,
                             "Enter Current Price: "
                     );
@@ -149,6 +174,7 @@ public class Main {
                             quantity
                     );
 
+                    // User's ArrayList receives the holding
                     stockUser.addHolding(stockHolding);
 
                     System.out.println();
@@ -180,32 +206,35 @@ public class Main {
                     );
 
                     System.out.print("Enter User ID: ");
-                    String mfUserId = sc.nextLine();
+                    String mfUserId = sc.nextLine().trim();
 
+                    // Find user using HashMap
                     User mfUser = findUser(mfUserId);
 
                     if (mfUser == null) {
 
-                        System.out.println("User not found.");
+                        System.out.println(
+                                "User not found."
+                        );
 
                         break;
                     }
 
                     System.out.print("Enter Holding ID: ");
-                    String mfHoldingId = sc.nextLine();
+                    String mfHoldingId = sc.nextLine().trim();
 
                     System.out.print("Enter Mutual Fund ID: ");
-                    String mfId = sc.nextLine();
+                    String mfId = sc.nextLine().trim();
 
                     System.out.print("Enter Mutual Fund Name: ");
-                    String mfName = sc.nextLine();
+                    String mfName = sc.nextLine().trim();
 
-                    double mfPurchasePrice = readDouble(
+                    double mfPurchasePrice = readPositiveDouble(
                             sc,
                             "Enter Purchase Price: "
                     );
 
-                    double nav = readDouble(
+                    double nav = readPositiveDouble(
                             sc,
                             "Enter NAV: "
                     );
@@ -234,6 +263,7 @@ public class Main {
                             mfQuantity
                     );
 
+                    // User's ArrayList receives the holding
                     mfUser.addHolding(mfHolding);
 
                     System.out.println();
@@ -259,9 +289,12 @@ public class Main {
                     } else {
 
                         System.out.println();
-                        System.out.println("--- User Details ---");
+                        System.out.println(
+                                "--- User Details ---"
+                        );
 
-                        for (User user : users) {
+                        // HashMap values() gives all User objects
+                        for (User user : users.values()) {
 
                             user.display();
 
@@ -292,7 +325,8 @@ public class Main {
                     System.out.println();
                     System.out.println("--- Holdings ---");
 
-                    for (User user : users) {
+                    // Loop through all users in HashMap
+                    for (User user : users.values()) {
 
                         System.out.println();
                         System.out.println(
@@ -303,6 +337,7 @@ public class Main {
                                 "User Name : " + user.getName()
                         );
 
+                        // ArrayList of holdings
                         if (user.getHoldings().isEmpty()) {
 
                             System.out.println(
@@ -311,6 +346,7 @@ public class Main {
 
                         } else {
 
+                            // Loop through ArrayList
                             for (Holding holding :
                                     user.getHoldings()) {
 
@@ -361,41 +397,11 @@ public class Main {
     // =========================================
     // FIND USER BY USER ID
     // =========================================
-    public static User findUser(String userid) {
-
-        for (User user : users) {
-
-            if (user.getUserid().equalsIgnoreCase(userid)) {
-
-                return user;
-            }
-        }
-
-        return null;
+    public static User findUser(String userid) 
+    {
+    	return users.get(userid);
     }
-
-
-    // =========================================
-    // CHECK DUPLICATE USER
-    // =========================================
-    public static boolean userExists(
-            String userid,
-            String name) {
-
-        for (User user : users) {
-
-            if (user.getUserid()
-                    .equalsIgnoreCase(userid)
-                    &&
-                user.getName()
-                    .equalsIgnoreCase(name)) {
-
-                return true;
-            }
-        }
-
-        return false;
-    }
+       
 
 
     // =========================================
@@ -412,7 +418,7 @@ public class Main {
             try {
 
                 return Integer.parseInt(
-                        sc.nextLine()
+                        sc.nextLine().trim()
                 );
 
             } catch (NumberFormatException e) {
@@ -450,9 +456,9 @@ public class Main {
 
 
     // =========================================
-    // READ DOUBLE
+    // READ POSITIVE DOUBLE
     // =========================================
-    public static double readDouble(
+    public static double readPositiveDouble(
             Scanner sc,
             String message) {
 
@@ -463,7 +469,7 @@ public class Main {
             try {
 
                 double value = Double.parseDouble(
-                        sc.nextLine()
+                        sc.nextLine().trim()
                 );
 
                 if (value >= 0) {
@@ -495,7 +501,10 @@ public class Main {
 
         while (true) {
 
-            double value = readDouble(sc, message);
+            double value = readPositiveDouble(
+                    sc,
+                    message
+            );
 
             if (value >= 0 && value <= 100) {
 
