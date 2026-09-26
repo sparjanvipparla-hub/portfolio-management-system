@@ -11,22 +11,35 @@ public class User {
 
     private List<Holding> holdings;
 
-    public User(String userid, String name, String email) {
+    // Default constructor required by Jackson
+    public User() {
+
+        holdings = new ArrayList<>();
+    }
+
+    // Parameterized constructor
+    public User(
+            String userid,
+            String name,
+            String email) {
 
         this.userid = userid;
         this.name = name;
         this.email = email;
 
-        this.holdings = new ArrayList<>();
+        holdings = new ArrayList<>();
     }
+
+    // Add Holding
 
     public void addHolding(Holding holding) {
 
         if (holding != null) {
-
             holdings.add(holding);
         }
     }
+
+    // Display User
 
     public void display() {
 
@@ -35,62 +48,72 @@ public class User {
         System.out.println("User ID            : " + userid);
         System.out.println("Name               : " + name);
         System.out.println("Email              : " + email);
-        System.out.println("Number of Holdings : " + holdings.size());
+        System.out.println(
+                "Number of Holdings : "
+                        + holdings.size()
+        );
         System.out.println("==================================");
     }
 
+    // Display Holdings
+
     public void displayHoldings() {
+
+        System.out.println();
+        System.out.println("User ID   : " + userid);
+        System.out.println("User Name : " + name);
 
         if (holdings.isEmpty()) {
 
-            System.out.println("No holdings available.");
+            System.out.println(
+                    "No holdings available."
+            );
 
             return;
         }
 
+        System.out.println("Holdings:");
+
         for (Holding holding : holdings) {
 
-            holding.display();
+            System.out.println(holding);
         }
     }
 
-    public String getUserid() {
+    // Getters and Setters
 
+    public String getUserid() {
         return userid;
     }
 
     public void setUserid(String userid) {
-
         this.userid = userid;
     }
 
     public String getName() {
-
         return name;
     }
 
     public void setName(String name) {
-
         this.name = name;
     }
 
     public String getEmail() {
-
         return email;
     }
 
     public void setEmail(String email) {
-
         this.email = email;
     }
 
     public List<Holding> getHoldings() {
-
         return holdings;
     }
 
     public void setHoldings(List<Holding> holdings) {
 
-        this.holdings = holdings;
+        this.holdings = holdings != null
+                ? holdings
+                : new ArrayList<>();
     }
 }

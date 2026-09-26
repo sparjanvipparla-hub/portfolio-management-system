@@ -4,70 +4,66 @@ public class Holding {
 
     private String holdingId;
     private Asset asset;
-    private double quantity;
+    private int quantity;
 
+    // Default constructor required by Jackson
+    public Holding() {
+    }
+
+    // Parameterized constructor
     public Holding(
             String holdingId,
             Asset asset,
-            double quantity) {
+            int quantity) {
 
         this.holdingId = holdingId;
         this.asset = asset;
         this.quantity = quantity;
     }
 
-    public String getHoldingId() {
+    // Getters
 
+    public String getHoldingId() {
         return holdingId;
     }
 
     public Asset getAsset() {
-
         return asset;
     }
 
-    public double getQuantity() {
-
+    public int getQuantity() {
         return quantity;
     }
 
-    public void setHoldingId(String holdingId) {
+    // Setters
 
+    public void setHoldingId(String holdingId) {
         this.holdingId = holdingId;
     }
 
     public void setAsset(Asset asset) {
-
         this.asset = asset;
     }
 
-    public void setQuantity(double quantity) {
-
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
-    public double calculateValue() {
+    // Calculate total current value
+    public double getCurrentValue() {
 
-        return asset.calculateCurrentValue() * quantity;
+        return asset.calculateCurrentValue()
+                * quantity;
     }
 
-    public void display() {
+    @Override
+    public String toString() {
 
-        System.out.println("--------------------------------------");
-        System.out.println("Holding ID     : " + holdingId);
-        System.out.println("Asset ID       : " + asset.getAssetId());
-        System.out.println("Asset Name     : " + asset.getAssetName());
-        System.out.println("Quantity       : " + quantity);
-        System.out.println(
-                "Purchase Price : " +
-                asset.getPurchasePrice()
-        );
-
-        System.out.printf(
-                "Current Value  : %.2f%n",
-                calculateValue()
-        );
-
-        System.out.println("--------------------------------------");
+        return "Holding{" +
+                "Holding ID='" + holdingId + '\'' +
+                ", Asset=" + asset +
+                ", Quantity=" + quantity +
+                ", Current Value=" + getCurrentValue() +
+                '}';
     }
 }

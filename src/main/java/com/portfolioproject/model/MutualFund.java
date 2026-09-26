@@ -3,49 +3,39 @@ package com.portfolioproject.model;
 public class MutualFund extends Asset {
 
     private double nav;
-    private double exitLoad;
 
+    // Default constructor required by Jackson
+    public MutualFund() {
+        super();
+    }
+
+    // Parameterized constructor
     public MutualFund(
             String assetId,
             String assetName,
             double purchasePrice,
-            double nav,
-            double exitLoad) {
+            double nav) {
 
-        super(
-                assetId,
-                assetName,
-                purchasePrice
-        );
-
+        super(assetId, assetName, purchasePrice);
         this.nav = nav;
-        this.exitLoad = exitLoad;
     }
 
-    public double getNav() {
-
+    // Method overriding
+    @Override
+    public double calculateCurrentValue() {
         return nav;
     }
 
+    // Getter
+
+    public double getNav() {
+        return nav;
+    }
+
+    // Setter
+
     public void setNav(double nav) {
-
         this.nav = nav;
-    }
-
-    public double getExitLoad() {
-
-        return exitLoad;
-    }
-
-    public void setExitLoad(double exitLoad) {
-
-        this.exitLoad = exitLoad;
-    }
-
-    @Override
-    public double calculateCurrentValue() {
-
-        return nav * (1 - exitLoad / 100);
     }
 
     @Override
@@ -56,7 +46,6 @@ public class MutualFund extends Asset {
                 ", Asset Name='" + getAssetName() + '\'' +
                 ", Purchase Price=" + getPurchasePrice() +
                 ", NAV=" + nav +
-                ", Exit Load=" + exitLoad + "%" +
                 '}';
     }
 }

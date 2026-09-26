@@ -1,22 +1,23 @@
 package com.portfolioproject.app;
 
 import com.portfolioproject.model.User;
+
 import com.portfolioproject.model.Stock;
 import com.portfolioproject.model.MutualFund;
 import com.portfolioproject.model.Holding;
+import com.portfolioproject.service.PortfolioService;
+import com.portfolioproject.util.JsonUtil;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
+import java.util.Comparator;
 
 public class Main {
-
-    // HashMap stores users using User ID as the key
-    static Map<String, User> users = new HashMap<>();
 
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
+
+        PortfolioService portfolioService = new PortfolioService();
 
         int choice;
 
@@ -26,80 +27,54 @@ public class Main {
 
         do {
 
-            System.out.println();
-            System.out.println("----------- MENU -----------");
+            System.out.println("\n----------- MENU -----------");
             System.out.println("1. Create User");
             System.out.println("2. Add Stock Holding");
             System.out.println("3. Add Mutual Fund Holding");
-            System.out.println("4. Display Users");
+            System.out.println("4. Display User");
             System.out.println("5. Display Holdings");
-            System.out.println("6. Exit");
+            System.out.println("6. Sort Holdings");
+            System.out.println("7. Save Data");
+            System.out.println("8. Load Data");
+            System.out.println("9. Exit");
             System.out.println("----------------------------");
 
-            choice = readInt(sc, "Enter your choice: ");
+            System.out.print("Enter your choice: ");
+            choice = sc.nextInt();
+            sc.nextLine();
 
             switch (choice) {
 
                 // =========================================
                 // CASE 1: CREATE USER
                 // =========================================
+
                 case 1:
 
-                    System.out.println();
-                    System.out.println("--- Create User ---");
+                    System.out.println("\n--- Create User ---");
 
                     System.out.print("Enter User ID: ");
-                    String userid = sc.nextLine().trim();
-
-                    if (userid.isEmpty()) {
-                        System.out.println("User ID cannot be empty.");
-                        break;
-                    }
-
-                    // HashMap duplicate check
-                    if (users.containsKey(userid)) {
-
-                        System.out.println();
-                        System.out.println(
-                                "User ID already exists!"
-                        );
-
-                        System.out.println(
-                                "Please enter a different User ID."
-                        );
-
-                        break;
-                    }
+                    String userid = sc.nextLine();
 
                     System.out.print("Enter User Name: ");
-                    String name = sc.nextLine().trim();
-
-                    if (name.isEmpty()) {
-                        System.out.println("User name cannot be empty.");
-                        break;
-                    }
+                    String name = sc.nextLine();
 
                     System.out.print("Enter Email: ");
-                    String email = sc.nextLine().trim();
+                    String email = sc.nextLine();
 
-                    if (email.isEmpty()) {
-                        System.out.println("Email cannot be empty.");
-                        break;
+                    // Check whether user already exists
+                    if (portfolioService.userExists(userid)) {
+
+                        System.out.println("User already exists!");
+
+                    } else {
+
+                        User user = new User(userid, name, email);
+
+                        portfolioService.addUser(user);
+
+                        System.out.println("User created successfully!");
                     }
-
-                    User newUser = new User(
-                            userid,
-                            name,
-                            email
-                    );
-
-                    // Add user to HashMap
-                    users.put(userid, newUser);
-
-                    System.out.println();
-                    System.out.println(
-                            "User created successfully!"
-                    );
 
                     break;
 
@@ -107,60 +82,44 @@ public class Main {
                 // =========================================
                 // CASE 2: ADD STOCK HOLDING
                 // =========================================
+
                 case 2:
 
-                    if (users.isEmpty()) {
-
-                        System.out.println();
-                        System.out.println(
-                                "Please create a user first."
-                        );
-
-                        break;
-                    }
-
-                    System.out.println();
-                    System.out.println("--- Add Stock Holding ---");
+                    System.out.println("\n--- Add Stock Holding ---");
 
                     System.out.print("Enter User ID: ");
-                    String stockUserId = sc.nextLine().trim();
+                    String stockUserId = sc.nextLine();
 
-                    // Find user using HashMap
-                    User stockUser = findUser(stockUserId);
+                    // Get user from HashMap through service
+                    User stockUser = portfolioService.getUser(stockUserId);
 
                     if (stockUser == null) {
 
-                        System.out.println(
-                                "User not found."
-                        );
-
+                        System.out.println("User not found.");
                         break;
                     }
 
                     System.out.print("Enter Holding ID: ");
-                    String stockHoldingId = sc.nextLine().trim();
+                    String stockHoldingId = sc.nextLine();
 
                     System.out.print("Enter Stock ID: ");
-                    String stockId = sc.nextLine().trim();
+                    String stockId = sc.nextLine();
 
                     System.out.print("Enter Stock Name: ");
-                    String stockName = sc.nextLine().trim();
+                    String stockName = sc.nextLine();
 
-                    double purchasePrice = readPositiveDouble(
-                            sc,
-                            "Enter Purchase Price: "
-                    );
+                    System.out.print("Enter Purchase Price: ");
+                    double purchasePrice = sc.nextDouble();
 
-                    double currentPrice = readPositiveDouble(
-                            sc,
-                            "Enter Current Price: "
-                    );
+                    System.out.print("Enter Current Price: ");
+                    double currentPrice = sc.nextDouble();
 
-                    int quantity = readPositiveInt(
-                            sc,
-                            "Enter Quantity: "
-                    );
+                    System.out.print("Enter Quantity: ");
+                    int quantity = sc.nextInt();
 
+                    sc.nextLine();
+
+                    // Create Stock object
                     Stock stock = new Stock(
                             stockId,
                             stockName,
@@ -168,16 +127,16 @@ public class Main {
                             currentPrice
                     );
 
+                    // Create Holding object
                     Holding stockHolding = new Holding(
                             stockHoldingId,
                             stock,
                             quantity
                     );
 
-                    // User's ArrayList receives the holding
+                    // Add holding to user
                     stockUser.addHolding(stockHolding);
 
-                    System.out.println();
                     System.out.println(
                             "Stock holding added successfully!"
                     );
@@ -188,85 +147,61 @@ public class Main {
                 // =========================================
                 // CASE 3: ADD MUTUAL FUND HOLDING
                 // =========================================
+
                 case 3:
 
-                    if (users.isEmpty()) {
-
-                        System.out.println();
-                        System.out.println(
-                                "Please create a user first."
-                        );
-
-                        break;
-                    }
-
-                    System.out.println();
-                    System.out.println(
-                            "--- Add Mutual Fund Holding ---"
-                    );
+                    System.out.println("\n--- Add Mutual Fund Holding ---");
 
                     System.out.print("Enter User ID: ");
-                    String mfUserId = sc.nextLine().trim();
+                    String mfUserId = sc.nextLine();
 
-                    // Find user using HashMap
-                    User mfUser = findUser(mfUserId);
+                    // Get user from HashMap through service
+                    User mfUser = portfolioService.getUser(mfUserId);
 
                     if (mfUser == null) {
 
-                        System.out.println(
-                                "User not found."
-                        );
-
+                        System.out.println("User not found.");
                         break;
                     }
 
                     System.out.print("Enter Holding ID: ");
-                    String mfHoldingId = sc.nextLine().trim();
+                    String mfHoldingId = sc.nextLine();
 
                     System.out.print("Enter Mutual Fund ID: ");
-                    String mfId = sc.nextLine().trim();
+                    String mfId = sc.nextLine();
 
                     System.out.print("Enter Mutual Fund Name: ");
-                    String mfName = sc.nextLine().trim();
+                    String mfName = sc.nextLine();
 
-                    double mfPurchasePrice = readPositiveDouble(
-                            sc,
-                            "Enter Purchase Price: "
-                    );
+                    System.out.print("Enter Purchase Price: ");
+                    double mfPurchasePrice = sc.nextDouble();
 
-                    double nav = readPositiveDouble(
-                            sc,
-                            "Enter NAV: "
-                    );
+                    System.out.print("Enter NAV: ");
+                    double nav = sc.nextDouble();
 
-                    double exitLoad = readPercentage(
-                            sc,
-                            "Enter Exit Load (%): "
-                    );
+                    System.out.print("Enter Quantity: ");
+                    int mfQuantity = sc.nextInt();
 
-                    int mfQuantity = readPositiveInt(
-                            sc,
-                            "Enter Units: "
-                    );
+                    sc.nextLine();
 
+                    // Create MutualFund object
                     MutualFund mutualFund = new MutualFund(
                             mfId,
                             mfName,
                             mfPurchasePrice,
-                            nav,
-                            exitLoad
+                            nav
                     );
 
+                    // Create Holding object
                     Holding mfHolding = new Holding(
                             mfHoldingId,
                             mutualFund,
                             mfQuantity
                     );
 
-                    // User's ArrayList receives the holding
+                    // Add holding to user
                     mfUser.addHolding(mfHolding);
 
-                    System.out.println();
                     System.out.println(
                             "Mutual fund holding added successfully!"
                     );
@@ -275,70 +210,54 @@ public class Main {
 
 
                 // =========================================
-                // CASE 4: DISPLAY ALL USERS
+                // CASE 4: DISPLAY USER
                 // =========================================
+
                 case 4:
 
-                    if (users.isEmpty()) {
+                    System.out.println("\n--- Display All Users ---");
 
-                        System.out.println();
-                        System.out.println(
-                                "No users created."
-                        );
+                    boolean found = false;
 
-                    } else {
+                    for (User user1 : portfolioService.getAllUsers()) {
 
-                        System.out.println();
-                        System.out.println(
-                                "--- User Details ---"
-                        );
+                        user1.display();
 
-                        // HashMap values() gives all User objects
-                        for (User user : users.values()) {
+                        System.out.println("----------------------------");
 
-                            user.display();
+                        found = true;
+                    }
 
-                            System.out.println(
-                                    "----------------------------"
-                            );
-                        }
+                    if (!found) {
+                        System.out.println("No users created.");
                     }
 
                     break;
 
+                // =========================================
+                // CASE 5: DISPLAY HOLDINGS
+                // =========================================
 
-                // =========================================
-                // CASE 5: DISPLAY ALL HOLDINGS
-                // =========================================
                 case 5:
 
-                    if (users.isEmpty()) {
+                    System.out.println("\n--- Holdings ---");
 
-                        System.out.println();
+                    boolean userFound = false;
+
+                    // Get all users from HashMap
+                    for (User user1 : portfolioService.getAllUsers()) {
+
+                        userFound = true;
+
                         System.out.println(
-                                "No users created."
-                        );
-
-                        break;
-                    }
-
-                    System.out.println();
-                    System.out.println("--- Holdings ---");
-
-                    // Loop through all users in HashMap
-                    for (User user : users.values()) {
-
-                        System.out.println();
-                        System.out.println(
-                                "User ID   : " + user.getUserid()
+                                "\nUser ID: " + user1.getUserid()
                         );
 
                         System.out.println(
-                                "User Name : " + user.getName()
+                                "User Name: " + user1.getName()
                         );
 
-                        // ArrayList of holdings
-                        if (user.getHoldings().isEmpty()) {
+                        if (user1.getHoldings().isEmpty()) {
 
                             System.out.println(
                                     "No holdings available."
@@ -346,11 +265,10 @@ public class Main {
 
                         } else {
 
-                            // Loop through ArrayList
                             for (Holding holding :
-                                    user.getHoldings()) {
+                                    user1.getHoldings()) {
 
-                                holding.display();
+                                System.out.println(holding);
                             }
                         }
 
@@ -359,161 +277,135 @@ public class Main {
                         );
                     }
 
+                    if (!userFound) {
+
+                        System.out.println("No users created.");
+                    }
+
                     break;
 
 
                 // =========================================
-                // CASE 6: EXIT
+                // CASE 6: SORT HOLDINGS
                 // =========================================
+
                 case 6:
 
-                    System.out.println();
+                    System.out.println("\n--- Sort Holdings ---");
+
+                    System.out.println("1. Sort by Holding ID");
+                    System.out.println("2. Sort by Quantity");
+
+                    System.out.print("Enter your choice: ");
+                    int sortChoice = sc.nextInt();
+
+                    sc.nextLine();
+
+                    boolean sorted = false;
+
+                    // Get all users from HashMap
+                    for (User user1 :
+                            portfolioService.getAllUsers()) {
+
+                        if (user1.getHoldings().isEmpty()) {
+
+                            continue;
+                        }
+
+                        if (sortChoice == 1) {
+
+                            user1.getHoldings().sort(
+                                    Comparator.comparing(
+                                            Holding::getHoldingId
+                                    )
+                            );
+
+                            sorted = true;
+
+                        } else if (sortChoice == 2) {
+
+                            user1.getHoldings().sort(
+                                    Comparator.comparingInt(
+                                            Holding::getQuantity
+                                    )
+                            );
+
+                            sorted = true;
+
+                        } else {
+
+                            System.out.println(
+                                    "Invalid sorting choice."
+                            );
+
+                            break;
+                        }
+                    }
+
+                    if (sorted) {
+
+                        System.out.println(
+                                "Holdings sorted successfully."
+                        );
+                    }
+
+                    break;
+
+
+                // =========================================
+                // CASE 7: Save Data
+                // =========================================
+                case 7:
+
+                    System.out.println("\n--- Save Data ---");
+
+                    JsonUtil.saveUsers(
+                            portfolioService.getAllUsers()
+                    );
+
+                    break;
+                 // =========================================
+                // CASE 8: Load Data
+                // =========================================
+                case 8:
+
+                    System.out.println("\n--- Load Data ---");
+
+                    User[] loadedUsers = JsonUtil.loadUsers();
+
+                    portfolioService.loadUsers(
+                            java.util.Arrays.asList(loadedUsers)
+                    );
+
+                    System.out.println("Data loaded successfully.");
+
+                    break;
+                 // =========================================
+                 // CASE 9: Exit
+                 // =========================================
+                case 9:
+
                     System.out.println(
-                            "Thank you for using "
-                            + "Stock Portfolio Management System."
+                            "\nThank you for using " +
+                            "Stock Portfolio Management System."
                     );
 
                     break;
 
 
                 // =========================================
-                // INVALID CHOICE
+                // DEFAULT
                 // =========================================
+
                 default:
 
-                    System.out.println();
                     System.out.println(
-                            "Invalid choice. "
-                            + "Please enter 1 to 6."
+                            "Invalid choice. Please enter 1 to 7."
                     );
             }
 
-        } while (choice != 6);
+        } while (choice != 9);
 
         sc.close();
-    }
-
-
-    // =========================================
-    // FIND USER BY USER ID
-    // =========================================
-    public static User findUser(String userid) 
-    {
-    	return users.get(userid);
-    }
-       
-
-
-    // =========================================
-    // READ INTEGER
-    // =========================================
-    public static int readInt(
-            Scanner sc,
-            String message) {
-
-        while (true) {
-
-            System.out.print(message);
-
-            try {
-
-                return Integer.parseInt(
-                        sc.nextLine().trim()
-                );
-
-            } catch (NumberFormatException e) {
-
-                System.out.println(
-                        "Invalid input. "
-                        + "Please enter a whole number."
-                );
-            }
-        }
-    }
-
-
-    // =========================================
-    // READ POSITIVE INTEGER
-    // =========================================
-    public static int readPositiveInt(
-            Scanner sc,
-            String message) {
-
-        while (true) {
-
-            int value = readInt(sc, message);
-
-            if (value > 0) {
-
-                return value;
-            }
-
-            System.out.println(
-                    "Please enter a number greater than 0."
-            );
-        }
-    }
-
-
-    // =========================================
-    // READ POSITIVE DOUBLE
-    // =========================================
-    public static double readPositiveDouble(
-            Scanner sc,
-            String message) {
-
-        while (true) {
-
-            System.out.print(message);
-
-            try {
-
-                double value = Double.parseDouble(
-                        sc.nextLine().trim()
-                );
-
-                if (value >= 0) {
-
-                    return value;
-                }
-
-                System.out.println(
-                        "Please enter a positive number."
-                );
-
-            } catch (NumberFormatException e) {
-
-                System.out.println(
-                        "Invalid input. "
-                        + "Please enter a valid number."
-                );
-            }
-        }
-    }
-
-
-    // =========================================
-    // READ PERCENTAGE
-    // =========================================
-    public static double readPercentage(
-            Scanner sc,
-            String message) {
-
-        while (true) {
-
-            double value = readPositiveDouble(
-                    sc,
-                    message
-            );
-
-            if (value >= 0 && value <= 100) {
-
-                return value;
-            }
-
-            System.out.println(
-                    "Percentage must be between 0 and 100."
-            );
-        }
     }
 }
